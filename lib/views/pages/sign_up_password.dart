@@ -1,8 +1,7 @@
-import 'package:agro/pages/login.dart';
 import 'package:agro/providers/language_provider.dart';
 import 'package:agro/services/auth_service.dart';
-import 'package:agro/utils/transitions.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPassword extends StatefulWidget {
@@ -144,12 +143,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  SlideTransitionRoute(
-                                    page: SignIn(userType: "Farmer"),
-                                  ),
-                                );
+                                context.go('/login/Farmer');
                               },
                               child: Text(
                                 "Login",

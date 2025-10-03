@@ -1,8 +1,7 @@
 import 'package:agro/providers/language_provider.dart';
-import 'package:agro/pages/login.dart';
-import 'package:agro/utils/transitions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -88,10 +87,7 @@ class _HomeState extends State<Home> {
                 InkWell(
                   splashColor: Colors.transparent,
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      SlideTransitionRoute(page: SignIn(userType: "Farmer")),
-                    );
+                    context.go('/login/Farmer');
                   },
                   child: Column(
                     children: [
@@ -123,6 +119,9 @@ class _HomeState extends State<Home> {
                 ),
                 SizedBox(width: w * 0.1),
                 InkWell(
+                  onTap: () {
+                    context.go('/login/Employer');
+                  },
                   child: Column(
                     children: [
                       SvgPicture.asset(

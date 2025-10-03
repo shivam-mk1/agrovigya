@@ -1,6 +1,6 @@
-import 'package:agro/wrapper/auth_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -19,15 +19,7 @@ class _SplashState extends State<Splash> {
   void _navigateNext() async {
     await Future.delayed(const Duration(seconds: 5));
     if (!mounted) return;
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => AuthWrapper(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
-    );
+    context.go('/auth');
   }
 
   @override

@@ -1,4 +1,4 @@
-import 'package:agro/custom%20widgets/custom_search_box.dart';
+import 'package:agro/views/widgets/custom_search_box.dart';
 import 'package:flutter/material.dart';
 
 class CustomSectionHeader extends StatelessWidget {

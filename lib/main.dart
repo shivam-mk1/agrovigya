@@ -1,7 +1,7 @@
 import 'package:agro/firebase_options.dart';
 import 'package:agro/providers/language_provider.dart';
 import 'package:agro/providers/navprovider.dart';
-import 'package:agro/splash.dart';
+import 'package:agro/utils/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -31,8 +31,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      routerConfig: AppRouter.router,
       locale: languageProvider.locale,
       theme: ThemeData(
         primaryColor: Color(0xff01342C),
@@ -46,7 +47,6 @@ class MyApp extends StatelessWidget {
           showUnselectedLabels: true,
         ),
       ),
-      home: Splash(),
     );
   }
 }

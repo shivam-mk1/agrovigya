@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:agro/home.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:go_router/go_router.dart';
 
 class SlideshowScreen extends StatefulWidget {
   const SlideshowScreen({super.key});
@@ -348,39 +348,7 @@ class _SlideshowScreenState extends State<SlideshowScreen>
                               const Spacer(),
                               InkWell(
                                 onTap: () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder:
-                                          (
-                                            context,
-                                            animation,
-                                            secondaryAnimation,
-                                          ) => const Home(),
-                                      transitionsBuilder: (
-                                        context,
-                                        animation,
-                                        secondaryAnimation,
-                                        child,
-                                      ) {
-                                        return SlideTransition(
-                                          position: Tween<Offset>(
-                                            begin: const Offset(1.0, 0.0),
-                                            end: Offset.zero,
-                                          ).animate(
-                                            CurvedAnimation(
-                                              parent: animation,
-                                              curve: Curves.easeInOutCubic,
-                                            ),
-                                          ),
-                                          child: child,
-                                        );
-                                      },
-                                      transitionDuration: const Duration(
-                                        milliseconds: 600,
-                                      ),
-                                    ),
-                                  );
+                                  context.go('/home');
                                 },
                                 borderRadius: BorderRadius.circular(30),
                                 child: Container(
