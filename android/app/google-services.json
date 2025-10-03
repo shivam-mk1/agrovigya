@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "12304981681",
+    "project_id": "agrovigya-362d7",
+    "storage_bucket": "agrovigya-362d7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12304981681:android:aa341058398bc61afd0c90",
+        "android_client_info": {
+          "package_name": "com.agro.agrovigya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12304981681-p8urlvugp4i89aiq1bp7b9t9ha332203.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvf6lV5P0F5DCooWZaHPK9rD9jNO2JnF4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12304981681-p8urlvugp4i89aiq1bp7b9t9ha332203.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12304981681:android:d7345c78dcc1cb2cfd0c90",
+        "android_client_info": {
+          "package_name": "com.example.agro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12304981681-p8urlvugp4i89aiq1bp7b9t9ha332203.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvf6lV5P0F5DCooWZaHPK9rD9jNO2JnF4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12304981681-p8urlvugp4i89aiq1bp7b9t9ha332203.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

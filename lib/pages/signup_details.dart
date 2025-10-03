@@ -1,6 +1,7 @@
+import 'package:agro/pages/sign_up_password.dart';
 import 'package:agro/providers/language_provider.dart';
 import 'package:agro/pages/farmer_main.dart';
-import 'package:agro/pages/signin_page.dart';
+import 'package:agro/pages/login.dart';
 import 'package:agro/utils/transitions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,9 +38,12 @@ class _SignUpState extends State<SignUp> {
 
   void _handleSignUp() {
     if (_formKey.currentState!.validate()) {
-      print('Name: ${_nameController.text}');
-      print('Email: ${_emailController.text}');
-      print('Password: ${_passwordController.text}');
+      Navigator.push(
+        context,
+        SlideTransitionRoute(
+          page: SignUpPassword(email: _emailController.text),
+        ),
+      );
     }
   }
 

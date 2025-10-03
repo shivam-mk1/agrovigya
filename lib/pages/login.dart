@@ -1,9 +1,10 @@
 import 'package:agro/providers/language_provider.dart';
+import 'package:agro/services/auth_service.dart';
 import 'package:agro/utils/transitions.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'signup_page.dart';
-import 'farmer_home.dart';
+import 'signup_details.dart';
 
 class SignIn extends StatefulWidget {
   final String userType;
@@ -15,24 +16,31 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  final authService = AuthService();
   final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _phoneController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _handleSignIn() {
+  void _handleSignIn() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => FarmerHome()),
+      final user = await authService.signInWithEmailAndPassword(
+        _emailController.text,
+        _passwordController.text,
       );
+      if (user == null) {
+        Fluttertoast.showToast(
+          msg: "Failed to login",
+          backgroundColor: Colors.red,
+        );
+      }
     }
   }
 
@@ -70,19 +78,21 @@ class _SignInState extends State<SignIn> {
                     ),
                     SizedBox(height: h * 0.05),
                     buildTextField(
-                      localizedStrings['phone'] ?? "Phone",
-                      localizedStrings['enter registered phone'] ??
-                          "Enter registered phone number",
-                      _phoneController,
-                      TextInputType.phone,
+                      localizedStrings['email'] ?? "Email",
+                      localizedStrings['enter registered email'] ??
+                          "Enter registered email address",
+                      _emailController,
+                      TextInputType.emailAddress,
                       (value) {
                         if (value == null || value.isEmpty) {
-                          return localizedStrings['please enter phone number'] ??
-                              "Please enter phone number";
+                          return localizedStrings['please enter email'] ??
+                              "Please enter email address";
                         }
-                        if (!RegExp(r'^\d{10}$').hasMatch(value)) {
-                          return localizedStrings['please enter a valid phone number'] ??
-                              "Please enter a valid phone number";
+                        if (!RegExp(
+                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        ).hasMatch(value)) {
+                          return localizedStrings['please enter a valid email'] ??
+                              "Please enter a valid email address";
                         }
                         return null;
                       },

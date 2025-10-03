@@ -1,4 +1,4 @@
-import 'package:agro/pageview.dart';
+import 'package:agro/wrapper/auth_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -22,8 +22,7 @@ class _SplashState extends State<Splash> {
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder:
-            (context, animation, secondaryAnimation) => SlideshowScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) => AuthWrapper(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },

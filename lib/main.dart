@@ -1,6 +1,8 @@
+import 'package:agro/firebase_options.dart';
 import 'package:agro/providers/language_provider.dart';
 import 'package:agro/providers/navprovider.dart';
 import 'package:agro/splash.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final languageProvider = LanguageProvider();
   await languageProvider.loadLanguage('en');
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     MultiProvider(
