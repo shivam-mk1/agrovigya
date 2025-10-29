@@ -1,18 +1,41 @@
 import 'package:agro/providers/language_provider.dart';
+import 'package:agro/repositories/auth_repository.dart';
+import 'package:agro/services/auth_service.dart';
+import 'package:agro/viewmodels/login_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class SignUp extends StatefulWidget {
+class SignUp extends StatelessWidget {
   final String userType;
 
   const SignUp({super.key, required this.userType});
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => LoginViewModel(AuthRepository(AuthService())),
+      child: Consumer<LoginViewModel>(
+        builder: (context, viewModel, child) {
+          return SignUpView(userType: userType, viewModel: viewModel);
+        },
+      ),
+    );
+  }
 }
 
-class _SignUpState extends State<SignUp> {
+class SignUpView extends StatefulWidget {
+  final String userType;
+  final LoginViewModel viewModel;
+
+  const SignUpView({super.key, required this.userType, required this.viewModel});
+
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
   bool isChecked = false;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
@@ -45,6 +68,24 @@ class _SignUpState extends State<SignUp> {
     final localizedStrings = languageProvider.localizedStrings;
     final double h = MediaQuery.of(context).size.height;
     final double w = MediaQuery.of(context).size.width;
+
+    if (widget.viewModel.status == AuthStatus.authenticated) {
+      // Navigate to home screen after successful login
+      // You might want to replace this with your actual home screen
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.go('/main');
+      });
+    }
+
+    if (widget.viewModel.errorMessage != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Fluttertoast.showToast(
+          msg: widget.viewModel.errorMessage!,
+          backgroundColor: Colors.red,
+        );
+      });
+    }
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -170,6 +211,9 @@ class _SignUpState extends State<SignUp> {
                   endIndent: 0,
                 ),
                 InkWell(
+                  onTap: () {
+                    widget.viewModel.signInWithGoogle();
+                  },
                   child: Container(
                     width: w * 0.8,
                     height: h * 0.05,

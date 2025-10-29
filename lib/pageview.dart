@@ -348,7 +348,7 @@ class _SlideshowScreenState extends State<SlideshowScreen>
                               const Spacer(),
                               InkWell(
                                 onTap: () {
-                                  context.go('/home');
+                                  context.go('/login-or-signup');
                                 },
                                 borderRadius: BorderRadius.circular(30),
                                 child: Container(

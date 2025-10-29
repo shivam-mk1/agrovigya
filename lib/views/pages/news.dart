@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NewsWidget extends StatefulWidget {
   const NewsWidget({super.key});
@@ -28,8 +29,17 @@ class _NewsWidgetState extends State<NewsWidget> {
     final DateTime sevenDaysAgo = now.subtract(Duration(days: 7));
     final String fromDate = sevenDaysAgo.toIso8601String().split('T')[0];
 
+    final String? apiKey = dotenv.env['NEWS_API_KEY'];
+    if (apiKey == null) {
+      setState(() {
+        errorMsg = 'API key not found.';
+        isLoading = false;
+      });
+      return;
+    }
+
     final String url =
-        'https://newsapi.org/v2/everything?q=Indian%20Agriculture%20and%20Farming&from=$fromDate&sortBy=relevancy&apiKey=68c5396380de4acb9a9b01637cca249c';
+        'https://newsapi.org/v2/everything?q=Indian%20Agriculture%20and%20Farming&from=$fromDate&sortBy=relevancy&apiKey=$apiKey';
 
     try {
       final response = await http.get(Uri.parse(url));

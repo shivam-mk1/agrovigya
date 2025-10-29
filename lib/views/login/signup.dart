@@ -1,67 +1,68 @@
 import 'package:agro/providers/language_provider.dart';
-import 'package:agro/viewmodels/login_viewmodel.dart';
+import 'package:agro/viewmodels/signup_viewmodel.dart';
 import 'package:agro/repositories/auth_repository.dart';
 import 'package:agro/services/auth_service.dart';
+import 'package:agro/views/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class SignIn extends StatelessWidget {
+class SignUp extends StatelessWidget {
   final String userType;
 
-  const SignIn({super.key, required this.userType});
+  const SignUp({super.key, required this.userType});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => LoginViewModel(AuthRepository(AuthService())),
-      child: Consumer<LoginViewModel>(
+      create: (_) => SignupViewModel(AuthRepository(AuthService())),
+      child: Consumer<SignupViewModel>(
         builder: (context, viewModel, child) {
-          return SignInView(userType: userType, viewModel: viewModel);
+          return SignUpView(userType: userType, viewModel: viewModel);
         },
       ),
     );
   }
 }
 
-class SignInView extends StatefulWidget {
+class SignUpView extends StatefulWidget {
   final String userType;
-  final LoginViewModel viewModel;
+  final SignupViewModel viewModel;
 
-  const SignInView({
+  const SignUpView({
     super.key,
     required this.userType,
     required this.viewModel,
   });
 
   @override
-  State<SignInView> createState() => _SignInViewState();
+  State<SignUpView> createState() => _SignUpViewState();
 }
 
-class _SignInViewState extends State<SignInView> {
+class _SignUpViewState extends State<SignUpView> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _handleSignIn() {
+  void _handleSignUp() {
     if (_formKey.currentState!.validate()) {
-      widget.viewModel.signInWithEmailAndPassword(
+      widget.viewModel.signUpWithEmailAndPassword(
         _emailController.text,
         _passwordController.text,
       );
     }
   }
-
-  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +72,7 @@ class _SignInViewState extends State<SignInView> {
     final localizedStrings = languageProvider.localizedStrings;
 
     if (widget.viewModel.status == AuthStatus.authenticated) {
-      // Navigate to home screen after successful login
-      // You might want to replace this with your actual home screen
+      // Navigate to home screen after successful signup
       WidgetsBinding.instance.addPostFrameCallback((_) {
         context.go('/main');
       });
@@ -103,7 +103,7 @@ class _SignInViewState extends State<SignInView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      localizedStrings['login'] ?? 'Login',
+                      localizedStrings['signup'] ?? 'Sign Up',
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.05,
@@ -160,67 +160,57 @@ class _SignInViewState extends State<SignInView> {
                         });
                       },
                     ),
-
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                    Row(
-                      children: [
-                        Checkbox(
-                          semanticLabel:
-                              localizedStrings['Keep me signed in'] ??
-                              'Keep me signed in',
-
-                          side: BorderSide(color: Colors.white, width: 2),
-                          splashRadius: 20,
-                          activeColor: Colors.white,
-
-                          checkColor: Color(0xff01342C),
-                          value: isChecked,
-                          onChanged: (newValue) {
-                            setState(() {
-                              isChecked = newValue!;
-                            });
-                          },
-                        ),
-                        Text(
-                          localizedStrings['Keep me signed in'] ??
-                              'Keep me signed in',
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                        ),
-                        const Spacer(),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            localizedStrings['forgot password?'] ??
-                                "Forgot Password?",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                    buildTextField(
+                      localizedStrings['confirm_password'] ?? "Confirm Password",
+                      localizedStrings['confirm_your_password'] ??
+                          "Confirm your password",
+                      _confirmPasswordController,
+                      TextInputType.visiblePassword,
+                      (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
+                      },
+                      Icon(
+                        _obscurePassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                      ),
+                      () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     widget.viewModel.status == AuthStatus.authenticating
-                        ? CircularProgressIndicator()
+                        ? CustomLoadingWidget(color: Colors.white, size: 50)
                         : InkWell(
-                          onTap: _handleSignIn,
-                          child: Container(
-                            width: w * 0.6,
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            decoration: BoxDecoration(
-                              color: Color(0xff4EBE44),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(
-                              child: Text(
-                                localizedStrings['login'] ?? 'Login',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal,
+                            onTap: _handleSignUp,
+                            child: Container(
+                              width: w * 0.6,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              decoration: BoxDecoration(
+                                color: Color(0xff4EBE44),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  localizedStrings['signup'] ?? 'Sign Up',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.normal,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     Divider(
                       thickness: 1,
@@ -231,6 +221,9 @@ class _SignInViewState extends State<SignInView> {
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     InkWell(
+                      onTap: () {
+                        widget.viewModel.signInWithGoogle();
+                      },
                       child: Container(
                         width: w * 0.8,
                         height: h * 0.05,
@@ -247,8 +240,8 @@ class _SignInViewState extends State<SignInView> {
                             ),
                             SizedBox(width: w * 0.02),
                             Text(
-                              localizedStrings['google login'] ??
-                                  'Log in with Google',
+                              localizedStrings['google_signup'] ??
+                                  'Sign up with Google',
                             ),
                           ],
                         ),
@@ -258,16 +251,16 @@ class _SignInViewState extends State<SignInView> {
                     Row(
                       children: [
                         Text(
-                          localizedStrings['not registered'] ??
-                              "Not Registered yet?",
+                          localizedStrings['already_registered'] ??
+                              "Already Registered?",
                           style: TextStyle(color: Colors.white),
                         ),
                         TextButton(
                           onPressed: () {
-                            context.go('/signup/${widget.userType}');
+                            context.go('/login/${widget.userType}');
                           },
                           child: Text(
-                            localizedStrings['sign up'] ?? "Sign Up",
+                            localizedStrings['login'] ?? "Login",
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -317,7 +310,7 @@ class _SignInViewState extends State<SignInView> {
           cursorColor: Colors.black,
           controller: controller,
           keyboardType: type,
-          obscureText: label == "Password" ? _obscurePassword : false,
+          obscureText: label == "Password" || label == "Confirm Password" ? _obscurePassword : false,
           decoration: InputDecoration(
             suffixIcon:
                 suffixIcon != null

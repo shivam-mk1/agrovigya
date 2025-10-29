@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 
 /// A service class to handle Firebase Authentication operations.
 ///
@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 class AuthService {
   // Instance of FirebaseAuth
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: <String>['email']);
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   /// Stream to listen for changes in the user's authentication state.
   ///
@@ -86,55 +86,68 @@ class AuthService {
   /// Triggers the Google Sign-In flow, and upon success, signs the user into
   /// Firebase with the obtained credentials. Returns the [User] object on
   /// success, or `null` on failure (e.g., if the user cancels the flow).
-  // Future<User?> signInWithGoogle() async {
-  //   try {
-  //     // Trigger the Google Sign-In flow
-  //     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+  Future<User?> signInWithGoogle() async {
+    try {
+      // Trigger the Google Sign-In flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-  //     // If the user cancels the sign-in flow, googleUser will be null
-  //     if (googleUser == null) {
-  //       return null;
-  //     }
+      // If the user cancels the sign-in flow, googleUser will be null
+      if (googleUser == null) {
+        if (kDebugMode) {
+          print('Google Sign-In was cancelled by user');
+        }
+        return null;
+      }
 
-  //     // Obtain the auth details from the request
-  //     final GoogleSignInAuthentication googleAuth =
-  //         await googleUser.authentication;
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
-  //     // Create a new credential for Firebase using OAuthCredential
-  //     final OAuthCredential credential = GoogleAuthProvider.credential(
-  //       accessToken: googleAuth.accessToken,
-  //       idToken: googleAuth.idToken,
-  //     );
+      // Create a new credential for Firebase using OAuthCredential
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-  //     // Once signed in, return the UserCredential
-  //     final UserCredential userCredential = await _auth.signInWithCredential(
-  //       credential,
-  //     );
+      // Once signed in, return the UserCredential
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
 
-  //     return userCredential.user;
-  //   } on FirebaseAuthException catch (e) {
-  //     if (kDebugMode) {
-  //       print('Firebase Auth Exception: ${e.message}');
-  //     }
-  //     rethrow; // Rethrow to allow UI to handle the error
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print('An unexpected error occurred: $e');
-  //     }
-  //     rethrow;
-  //   }
-  // }
+      return userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      if (kDebugMode) {
+        print('Firebase Auth Exception: ${e.code} - ${e.message}');
+      }
+      rethrow; // Rethrow to allow UI to handle the error
+    } catch (e) {
+      if (kDebugMode) {
+        print('An unexpected error occurred during Google Sign-In: $e');
+      }
+      rethrow;
+    }
+  }
 
   /// Signs out the currently authenticated user from Firebase and Google.
   Future<void> signOut() async {
     try {
-      // Sign out from Firebase first
-      await _auth.signOut();
-      // Then sign out from Google to allow account switching
-      // await _googleSignIn.signOut();
+      // Sign out from both Firebase and Google
+      await Future.wait([_auth.signOut(), _googleSignIn.signOut()]);
     } catch (e) {
       if (kDebugMode) {
         print('Error signing out: $e');
+      }
+      rethrow;
+    }
+  }
+
+  /// Disconnect Google account (removes access completely)
+  Future<void> disconnectGoogle() async {
+    try {
+      await _googleSignIn.disconnect();
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error disconnecting Google account: $e');
       }
       rethrow;
     }

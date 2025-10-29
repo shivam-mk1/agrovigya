@@ -21,4 +21,8 @@ class AuthRepository {
   Future<void> signOut() {
     return _authService.signOut();
   }
+
+  Future<User?> signInWithGoogle() {
+    return _authService.signInWithGoogle();
+  }
 }

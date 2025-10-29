@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +20,15 @@ class _SplashState extends State<Splash> {
   void _navigateNext() async {
     await Future.delayed(const Duration(seconds: 5));
     if (!mounted) return;
-    context.go('/auth');
+
+    final auth = FirebaseAuth.instance;
+    final user = auth.currentUser;
+
+    if (user != null) {
+      context.go('/main');
+    } else {
+      context.go('/slideshow');
+    }
   }
 
   @override

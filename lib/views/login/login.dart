@@ -2,6 +2,7 @@ import 'package:agro/providers/language_provider.dart';
 import 'package:agro/viewmodels/login_viewmodel.dart';
 import 'package:agro/repositories/auth_repository.dart';
 import 'package:agro/services/auth_service.dart';
+import 'package:agro/views/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
@@ -199,7 +200,7 @@ class _SignInViewState extends State<SignInView> {
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     widget.viewModel.status == AuthStatus.authenticating
-                        ? CircularProgressIndicator()
+                        ? CustomLoadingWidget(color: Colors.white, size: 50)
                         : InkWell(
                           onTap: _handleSignIn,
                           child: Container(
@@ -231,6 +232,9 @@ class _SignInViewState extends State<SignInView> {
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     InkWell(
+                      onTap: () {
+                        widget.viewModel.signInWithGoogle();
+                      },
                       child: Container(
                         width: w * 0.8,
                         height: h * 0.05,
