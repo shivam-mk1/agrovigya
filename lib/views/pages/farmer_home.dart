@@ -4,6 +4,7 @@ import 'package:agro/providers/language_provider.dart';
 import 'package:agro/services/weather.dart';
 import 'package:agro/widgets/crop_recommendation_widget.dart';
 import 'package:agro/widgets/labor_estimation_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -35,9 +36,11 @@ class _FarmerHomeState extends State<FarmerHome> with TickerProviderStateMixin {
           title: "Hello Farmer",
           showDrawer: true,
           height: 70,
-          profileImage: AssetImage('assets/images/shivam.jpeg'),
+          profileImage: FirebaseAuth.instance.currentUser?.photoURL != null
+              ? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!)
+              : null,
           onProfilePressed: () {
-            context.go('/profile');
+            context.push('/profile');
           },
         ),
         body: SingleChildScrollView(

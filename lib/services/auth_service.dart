@@ -9,7 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthService {
   // Instance of FirebaseAuth
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
 
   /// Stream to listen for changes in the user's authentication state.
   ///

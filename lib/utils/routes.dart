@@ -1,4 +1,3 @@
-import 'package:agro/home.dart';
 import 'package:agro/pageview.dart';
 import 'package:agro/splash.dart';
 import 'package:agro/views/pages/about_us.dart';
@@ -25,7 +24,6 @@ class AppRouter {
         path: '/login-or-signup',
         builder: (context, state) => const SelectUserRole(),
       ),
-      GoRoute(path: '/home', builder: (context, state) => const Home()),
       GoRoute(
         path: '/login/:userType',
         builder: (context, state) {
